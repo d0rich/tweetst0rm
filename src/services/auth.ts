@@ -1,9 +1,8 @@
 import { Collection } from "mongodb";
 import express, { Response, Request } from 'express'
-import { OAuth2Tokens } from '../types/mongo.model';
+import { OAuth2TokensVerifier } from '../types/mongo.model';
 import { TwitterApi } from "twitter-api-v2";
 
-const DOC_ID = 'OAuth2 tokens'
 const callbackUrl = 'http://127.0.0.1:3000/auth/callback'
 
 export function initAuthRoutes(tokensCollection: Collection, twitterClient: TwitterApi){
@@ -11,14 +10,13 @@ export function initAuthRoutes(tokensCollection: Collection, twitterClient: Twit
   const port = 3000
 
   app.get('/auth', async (req: Request, res: Response) => {
-    console.log(await tokensCollection.countDocuments())
     const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(
       callbackUrl,
       { scope: ['tweet.read', 'tweet.write', 'users.read', 'offline.access'] }
     )
 
     await tokensCollection.updateOne(
-      { id: DOC_ID }, 
+      {}, 
       { $set: { codeVerifier, state } }, 
       { upsert: true }
     )
@@ -30,7 +28,7 @@ export function initAuthRoutes(tokensCollection: Collection, twitterClient: Twit
     const { state, code } = req.query
     if (!state || !code) 
       return res.status(400).send()
-    const existingTokens = await tokensCollection.findOne<OAuth2Tokens>({ id: DOC_ID })
+    const existingTokens = await tokensCollection.findOne<OAuth2TokensVerifier>()
     if (!existingTokens) {
       return res.status(400).send({ error: 'Tokens do not exist!' })
     }
@@ -50,7 +48,7 @@ export function initAuthRoutes(tokensCollection: Collection, twitterClient: Twit
     })
 
     await tokensCollection.updateOne(
-      { id: DOC_ID }, 
+      {}, 
       { 
         $set: { accessToken, refreshToken },
         $unset: { codeVerifier: null, state: null }
@@ -58,7 +56,7 @@ export function initAuthRoutes(tokensCollection: Collection, twitterClient: Twit
       { upsert: true }
     )
 
-    res.status(200).send()
+    res.status(200).send('You have been authorized!')
   })
 
   app.listen(port, () => {
