@@ -1,5 +1,5 @@
 import { connectOpenai } from "../connect/openai.connect";
-import { topics, wildcards } from "../../prompts";
+import { topics, wildcards, sentenceTypes } from "../../prompts";
 
 function randomArrayItem(array: any[]){
   return array[Math.floor(Math.random() * array.length)]
@@ -10,8 +10,8 @@ export async function createPost(){
 
   const { data: newText } = await openai.createCompletion({
     model: 'text-davinci-002',
-    prompt: `tweet something about ${ randomArrayItem(topics) } and ${randomArrayItem(wildcards)}.`,
-    temperature: 1,
+    prompt: `tweet ${randomArrayItem(sentenceTypes)} about ${ randomArrayItem(topics) } and ${randomArrayItem(wildcards)}. Tweet should consist of plain text.`,
+    temperature: 0.7,
     max_tokens: 64
   })
 
