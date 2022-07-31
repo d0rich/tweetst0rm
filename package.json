@@ -7,7 +7,7 @@
     "dev": "nodemon ./src/index.ts",
     "test": "ts-node ./test/createPost.test.ts",
     "build": "tsc",
-    "run": "node ./dist/src/index.js"
+    "start": "node ./dist/src/index.js"
   },
   "author": "",
   "license": "ISC",
