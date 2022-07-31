@@ -1,10 +1,12 @@
 import {connect} from './connect/mongodb.connect'
 import {initAuthRoutes} from './services/auth'
+import { initHelthzService } from './services/healthz'
 import { publishPost } from './services/publish'
 import { connectTwitter } from './connect/twitter.connect'
 import scheduler from 'node-schedule'
 
 async function main(){
+  initHelthzService()
   const mongo = await connect()
   const twitterClient = connectTwitter()
   const tokensCollection = mongo.db('auth').collection('tokens')
