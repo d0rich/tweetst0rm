@@ -10,7 +10,7 @@ async function main(){
   const tokensCollection = mongo.db('auth').collection('tokens')
   initAuthRoutes(tokensCollection, twitterClient)
   scheduler.scheduleJob('0 0 * * *', () => {
-    const numberOfPostsToday = Math.floor(Math.random() * 3)
+    const numberOfPostsToday = Math.floor(Math.random() * 5)
     for (let i of [...Array(numberOfPostsToday).keys()])
       scheduler.scheduleJob(new Date(Number(new Date()) + 1000 * 60 * 60 * 24 * Math.random()), async () => {
         await publishPost(tokensCollection, twitterClient)
