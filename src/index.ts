@@ -1,7 +1,7 @@
-import {connect} from './mongodb.connect'
+import {connect} from './connect/mongodb.connect'
 import {initAuthRoutes} from './services/auth'
 import { publishPost } from './services/publish'
-import { connectTwitter } from './twitter.connect'
+import { connectTwitter } from './connect/twitter.connect'
 import scheduler from 'node-schedule'
 
 async function main(){

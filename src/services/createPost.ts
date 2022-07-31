@@ -1,4 +1,4 @@
-import { connectOpenai } from "../openai.connect";
+import { connectOpenai } from "../connect/openai.connect";
 
 export async function createPost(){
   const openai = connectOpenai()
