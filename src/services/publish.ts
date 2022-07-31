@@ -32,6 +32,6 @@ export async function publishPost(tokensCollection: Collection, twitterClient: T
   if (!newPost) return
 
   const { data } = await refreshedClient.v2.tweet(newPost)
-  console.log(`${new Date().toLocaleString()} - new post!`)
+  console.log(`${new Date().toLocaleString()} | new post!`)
   console.log(newPost)
 }

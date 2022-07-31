@@ -11,12 +11,25 @@ async function main(){
   const twitterClient = connectTwitter()
   const tokensCollection = mongo.db('auth').collection('tokens')
   initAuthRoutes(tokensCollection, twitterClient)
-  scheduler.scheduleJob('0 0 * * *', () => {
+
+  function scheduleForToday() {
     const numberOfPostsToday = Math.floor(Math.random() * 5)
-    for (let i of [...Array(numberOfPostsToday).keys()])
-      scheduler.scheduleJob(new Date(Number(new Date()) + 1000 * 60 * 60 * 24 * Math.random()), async () => {
+    console.log(`${new Date().toLocaleString()} | Number of posts today: ${numberOfPostsToday}`)
+    console.log('Publish timestamps: ')
+    for (let i of [...Array(numberOfPostsToday).keys()]){
+      const publishTimestamp = new Date(Number(new Date()) + 1000 * 60 * 60 * 24 * Math.random())
+      console.log(publishTimestamp.toLocaleString())
+      scheduler.scheduleJob(publishTimestamp, async () => {
         await publishPost(tokensCollection, twitterClient)
       })
+    }
+      
+  }
+
+  scheduleForToday()
+
+  scheduler.scheduleJob('0 0 * * *', () => {
+    scheduleForToday()
   })
   
 }
