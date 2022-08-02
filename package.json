@@ -8,6 +8,7 @@
     "test": "ts-node ./test/createPost.test.ts",
     "build": "tsc",
     "start": "node ./dist/src/index.js",
+    "auth": "ts-node ./scripts/auth.ts",
     "publish-post": "ts-node ./scripts/publishPost.ts"
   },
   "author": "",

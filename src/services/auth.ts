@@ -2,11 +2,16 @@ import { Collection } from "mongodb";
 import express, { Response, Request } from 'express'
 import { OAuth2TokensVerifier } from '../types/mongo.model';
 import { TwitterApi } from "twitter-api-v2";
+import { Server } from 'http'
 
 const callbackUrl = 'http://127.0.0.1:3000/auth/callback'
 
-export function initAuthRoutes(tokensCollection: Collection, twitterClient: TwitterApi){
+export function initAuthRoutes(
+  tokensCollection: Collection, 
+  twitterClient: TwitterApi, 
+  authCallback: (server: Server) => void = () => {}){
   const app = express()
+  let server: Server
   const port = 3000
 
   app.get('/auth', async (req: Request, res: Response) => {
@@ -25,7 +30,8 @@ export function initAuthRoutes(tokensCollection: Collection, twitterClient: Twit
   })
 
   app.get('/auth/callback', async (req: Request, res: Response) => {
-    const { state, code } = req.query
+    // @ts-ignore
+    const { state, code }: {state: string | undefined, code: string | undefined} = req.query
     if (!state || !code) 
       return res.status(400).send()
     const existingTokens = await tokensCollection.findOne<OAuth2TokensVerifier>()
@@ -41,7 +47,6 @@ export function initAuthRoutes(tokensCollection: Collection, twitterClient: Twit
       accessToken,
       refreshToken
     } = await twitterClient.loginWithOAuth2({
-      // @ts-ignore
       code,
       codeVerifier: existingTokens.codeVerifier,
       redirectUri: callbackUrl
@@ -55,11 +60,13 @@ export function initAuthRoutes(tokensCollection: Collection, twitterClient: Twit
       },
       { upsert: true }
     )
-
+    
     res.status(200).send('You have been authorized!')
+
+    authCallback(server)
   })
 
-  app.listen(port, () => {
+  server = app.listen(port, () => {
     console.log(`Go to http://localhost:3000/auth to authorize`)
   })
 
