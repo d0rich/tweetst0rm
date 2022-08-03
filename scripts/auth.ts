@@ -10,8 +10,11 @@ async function main(){
   const twitterClient = connectTwitter()
   const tokensCollection = mongo.db('auth').collection('tokens')
   initAuthRoutes(tokensCollection, twitterClient, (server) => {
+    console.log('You have been authorized!')
+    console.log('Turning off server...')
     mongo.close()
     server.close()
+    process.exit(0)
   })
   
 }

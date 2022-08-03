@@ -4,7 +4,10 @@ import { OAuth2TokensVerifier } from '../types/mongo.model';
 import { TwitterApi } from "twitter-api-v2";
 import { Server } from 'http'
 
-const callbackUrl = 'http://127.0.0.1:3000/auth/callback'
+const PORT = 3000
+const HOST = '127.0.0.1'
+const CALLBACK_ADDRESS = 'callback'
+const callbackUrl = `http://${HOST}:${PORT}/auth/${CALLBACK_ADDRESS}`
 
 export function initAuthRoutes(
   tokensCollection: Collection, 
@@ -12,7 +15,6 @@ export function initAuthRoutes(
   authCallback: (server: Server) => void = () => {}){
   const app = express()
   let server: Server
-  const port = 3000
 
   app.get('/auth', async (req: Request, res: Response) => {
     const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(
@@ -29,7 +31,7 @@ export function initAuthRoutes(
     res.redirect(url)
   })
 
-  app.get('/auth/callback', async (req: Request, res: Response) => {
+  app.get(`/auth/${CALLBACK_ADDRESS}`, async (req: Request, res: Response) => {
     // @ts-ignore
     const { state, code }: {state: string | undefined, code: string | undefined} = req.query
     if (!state || !code) 
@@ -66,8 +68,9 @@ export function initAuthRoutes(
     authCallback(server)
   })
 
-  server = app.listen(port, () => {
-    console.log(`Go to http://localhost:3000/auth to authorize`)
+  server = app.listen(PORT, HOST, () => {
+    console.log(`Go to http://${HOST}:${PORT}/auth to authorize`)
+    console.log(`Callback URL: ${callbackUrl}`)
   })
 
   return app
