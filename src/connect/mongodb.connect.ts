@@ -1,6 +1,8 @@
 import 'dotenv/config'
 import { MongoClient } from 'mongodb'
-const client = new MongoClient(`mongodb+srv://${process.env.MONGODB_HOST}/`, 
+
+export async function connect(){
+  const client = new MongoClient(`mongodb+srv://${process.env.MONGODB_HOST}/`, 
   { 
     auth: {
       username: process.env.MONGODB_USER,
@@ -9,9 +11,6 @@ const client = new MongoClient(`mongodb+srv://${process.env.MONGODB_HOST}/`,
     retryWrites: true,
     w: 'majority'
   });
-
-
-export async function connect(){
   await client.connect()
   console.log('MongoDB connected')
   return client
