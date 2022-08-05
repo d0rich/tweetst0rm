@@ -9,7 +9,8 @@
     "build": "tsc",
     "start": "node ./dist/src/index.js",
     "auth": "ts-node ./scripts/auth.ts",
-    "publish-post": "ts-node ./scripts/publishPost.ts"
+    "publish-post": "ts-node ./scripts/publishPost.ts",
+    "publish-post-random": "ts-node ./scripts/publishPostRandom.ts"
   },
   "author": "",
   "license": "ISC",
