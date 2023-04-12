@@ -1,6 +1,9 @@
 {
   "private": true,
   "dependencies": {
-    "d0xigen": "*"
+    "d0xigen": "^0.1.4"
+  },
+  "devDependencies": {
+    "nuxt": "^3.3.3"
   }
 }
