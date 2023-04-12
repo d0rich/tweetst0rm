@@ -1,5 +1,7 @@
 .idea/
-dist/
+dist
+.output
+.nuxt
 node_modules/
 .env
 prompts.ts
