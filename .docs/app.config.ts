@@ -16,7 +16,8 @@ export default defineAppConfig({
     },
     d0richIndex: {
       complexity: 2,
-      tags: ['ai', 'twitter', 'back-end']
+      tags: ['ai', 'twitter', 'back-end'],
+      freezeUpdateDate: new Date('2022-09-05')
     },
   }
 })
